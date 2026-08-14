@@ -1,0 +1,4 @@
+interface:
+  display_name: "Smart Git Commit"
+  short_description: "Smart frontend/backend Git commit planning"
+  default_prompt: "使用 $smart-git-commit 分析当前 Git 变更并生成智能提交计划。"
