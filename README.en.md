@@ -11,6 +11,7 @@ Git commit skills for modular frontend and backend development. The current `sma
 - One-file mode: each commit contains one regular file or one logical rename
 - Covers staged, unstaged, untracked, deleted, and renamed files
 - Keeps tests with their implementation while planning configuration and documentation separately
+- Pushes each successful commit to the current branch's remote tracking branch
 - Writes commit descriptions in the user's current language
 - Supports Windows PowerShell, macOS Bash/zsh, and Linux Bash/zsh
 - Stops on failure and resumes from the failed item
@@ -57,7 +58,7 @@ Use smart mode by default:
 Use $smart-git-commit to analyze the current Git changes.
 ```
 
-The skill returns a commit plan without changing the repository. After reviewing the plan, send:
+The skill returns a commit plan without changing the repository. After reviewing the plan, send `commit`; each commit group is pushed immediately after its local commit and path validation succeeds:
 
 ```text
 commit
@@ -83,13 +84,15 @@ After resolving an external cause of a failed commit:
 continue committing
 ```
 
+If the local commit succeeded but its push failed, `continue committing` retries that push before creating or processing another commit. An existing upstream is reused; when the current branch has no upstream, the first push uses `origin/<current-branch>` and establishes tracking.
+
 ## How It Works
 
 Smart mode inspects the repository structure, then classifies changes as shared contracts, backend modules, frontend modules, configuration, or documentation. Frontend and backend changes never share a commit, and unrelated business modules are not merged merely because their files have similar extensions.
 
 Commit messages keep the `type: description` format and allow only `feat`, `fix`, `refactor`, `perf`, `docs`, `style`, `test`, and `chore`. Descriptions are limited to 20 characters and contain no author or tool attribution.
 
-The skill rescans the working tree before committing. If a file or its content changed after the plan was generated, the plan becomes invalid and must be regenerated.
+The skill rescans the working tree before committing. If a file or its content changed after the plan was generated, the plan becomes invalid and must be regenerated. It also verifies the current branch and `origin` before committing, then checks that local HEAD matches the remote tracking branch after the push.
 
 ## Platform Notes
 
